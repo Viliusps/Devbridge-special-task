@@ -2,4 +2,4 @@
 
 Frontend paleidžiamas su komanda npm start.
 
-Backend paleidžiamas su komanda mvn spring-boot:run.
+Backend paleidžiamas per pasirinktą IDE paleidžiant SpecialtaskApplication.java failą.
