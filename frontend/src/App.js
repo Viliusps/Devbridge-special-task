@@ -1,7 +1,7 @@
 import './App.css';
 import React, {useState} from 'react';
-import { CsvToHtmlTable } from 'react-csv-to-table';
-
+import Papa from 'papaparse';
+import axios from 'axios';
 
 function App() {
 
@@ -9,39 +9,37 @@ function App() {
   
   const onFileChange = event => {
    
-    console.log("changed");
-    setSelectedFile({ File: event.target.files[0] });
+    Papa.parse(event.target.files[0], {
+      header: true,
+      skipEmptyLines: true,
+      complete: function (results) {
+        console.log(results.data)
+        setSelectedFile(results.data);
+      },
+    });
    
   };
    
   const onFileUpload = () => {
    
-    console.log("uploaded")
-
-  };
-
-  const handleFiles = files => {
-    var reader = new FileReader();
-    reader.onload =  (e) => {
-      // Use reader.result
-      this.setState({
-        csvData: reader.result
-      })
+    console.log("uploaded");
+    console.log(SelectedFile);
+    //--------------------------
+    for(let i = 0; i < SelectedFile.length; i++)
+    {
+      axios.post('http://localhost:8080/api/employees', {
+                        name: SelectedFile[i].full_name,
+                        email: SelectedFile[i].email,
+                        phone: SelectedFile[i].phone
+                  })
     }
-    reader.readAsText(files[0]);
-  }
+  };
   
   return (
     <div className="App">
       <header className="App-header">
       <input type="file" onChange={onFileChange} />
       <button onClick={onFileUpload}>Upload</button>
-
-      <CsvToHtmlTable
-        data={SelectedFile || ""}
-        csvDelimiter=","
-        tableClassName="table table-striped table-hover"
-      />
       </header>
       
 

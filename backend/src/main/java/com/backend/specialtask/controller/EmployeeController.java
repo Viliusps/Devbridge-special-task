@@ -21,6 +21,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.backend.specialtask.model.Employee;
 import com.backend.specialtask.repository.EmployeeRepository;
 
+@CrossOrigin(origins = "http://localhost:3000")
+@RestController
+@RequestMapping("/api")
 public class EmployeeController {
     @Autowired
 	EmployeeRepository employeeRepository;
