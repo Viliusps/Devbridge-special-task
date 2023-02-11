@@ -1,14 +1,22 @@
 import './App.css';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Papa from 'papaparse';
 import axios from 'axios';
 
 function App() {
 
   const [SelectedFile, setSelectedFile] = useState(null);
+  const [EmployeeData, setEmployeeData] = useState(null);
   
+  useEffect(() => {
+    axios.get("http://localhost:8080/api/employees").then(
+      (resp) => (setEmployeeData(resp.data))
+    );
+  }, [])
+  
+
   const onFileChange = event => {
-   
+
     Papa.parse(event.target.files[0], {
       header: true,
       skipEmptyLines: true,
@@ -22,9 +30,6 @@ function App() {
    
   const onFileUpload = () => {
    
-    console.log("uploaded");
-    console.log(SelectedFile);
-    //--------------------------
     for(let i = 0; i < SelectedFile.length; i++)
     {
       axios.post('http://localhost:8080/api/employees', {
@@ -37,10 +42,29 @@ function App() {
   
   return (
     <div className="App">
-      <header className="App-header">
-      <input type="file" onChange={onFileChange} />
-      <button onClick={onFileUpload}>Upload</button>
-      </header>
+
+      <br/>
+      <input type="file" onChange={onFileChange} /><br/><br/>
+
+      <button className="Upload" onClick={onFileUpload}>Upload</button><br/><br/><br/><br/>
+
+      <table className="Table">
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone Number</th>
+            </tr>
+  
+            {(EmployeeData || []).map((employee, index) => (
+              <tr data-index={index}>
+                <td>{employee.name}</td>
+                <td>{employee.email}</td>
+                <td>{employee.phone}</td>
+              </tr>
+            ))}
+  
+        </table>
+      
       
 
     </div>
