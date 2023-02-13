@@ -32,11 +32,7 @@ public class EmployeeController {
 	public ResponseEntity<List<Employee>> getAllEmployees(@RequestParam(required = false) String name) {
 		try {
 			List<Employee> employees = new ArrayList<Employee>();
-
-			if (name == null)
-				employeeRepository.findAll().forEach(employees::add);
-			else
-				employeeRepository.findByNameContaining(name).forEach(employees::add);
+			employeeRepository.findAll().forEach(employees::add);
 
 			if (employees.isEmpty()) {
 				return new ResponseEntity<>(HttpStatus.NO_CONTENT);

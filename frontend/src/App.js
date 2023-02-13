@@ -21,7 +21,6 @@ function App() {
       header: true,
       skipEmptyLines: true,
       complete: function (results) {
-        console.log(results.data)
         setSelectedFile(results.data);
       },
     });
@@ -29,39 +28,55 @@ function App() {
   };
    
   const onFileUpload = () => {
-   
-    for(let i = 0; i < SelectedFile.length; i++)
-    {
-      axios.post('http://localhost:8080/api/employees', {
-                        name: SelectedFile[i].full_name,
-                        email: SelectedFile[i].email,
-                        phone: SelectedFile[i].phone
-                  })
+
+    if(SelectedFile == null){
+      window.alert("Please select a file.");
     }
+
+   else{
+
+      for(let i = 0; i < SelectedFile.length; i++)
+      {
+        axios.post('http://localhost:8080/api/employees', {
+                          name: SelectedFile[i].full_name,
+                          email: SelectedFile[i].email,
+                          phone: SelectedFile[i].phone
+                    })
+      }
+      window.location.reload(false);
+      document.getElementById("Table").setAttribute("hidden={false}");
+    }
+    
   };
   
   return (
     <div className="App">
 
       <br/>
-      <input type="file" onChange={onFileChange} /><br/><br/>
+      <input className="File" id="file" type="file" onChange={onFileChange} />
+      <label className="Label" htmlFor="file">Select file...</label>
+      <br/>
 
       <button className="Upload" onClick={onFileUpload}>Upload</button><br/><br/><br/><br/>
 
-      <table className="Table">
-            <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Phone Number</th>
+      <table id="Table" className="Table">
+        <thead hidden={EmployeeData ? false : true}>
+          <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Phone Number</th>
+          </tr>
+        </thead>
+        <tbody>
+          {(EmployeeData || []).map((employee, index) => (
+            <tr data-index={index} key={employee.id}>
+              <td>{employee.name}</td>
+              <td>{employee.email}</td>
+              <td>{employee.phone}</td>
             </tr>
-  
-            {(EmployeeData || []).map((employee, index) => (
-              <tr data-index={index}>
-                <td>{employee.name}</td>
-                <td>{employee.email}</td>
-                <td>{employee.phone}</td>
-              </tr>
-            ))}
+          ))}
+        </tbody>
+            
   
         </table>
       
